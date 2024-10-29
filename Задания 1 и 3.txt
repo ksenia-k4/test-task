@@ -1,0 +1,72 @@
+Задание 1
+<?php
+function generateAnnouncement($text) {
+    $max_length = 250;
+    $words = explode(' ', $text);
+    $words = array_slice($words, 0, 250);
+    $announcement = implode(' ', array_slice($words, 0, 247));
+    echo count($words);
+    $announcement = rtrim($announcement) ." <a href='full_article_link'> $words[247] $words[248] $words[249]...</a>";
+    return $announcement;
+}
+
+$articleText = readline();
+$announcement = generateAnnouncement($articleText);
+
+echo $announcement;
+?>
+
+
+Задание 3
+<?php
+$x_and_y = readline();               // Считывание данных
+$width = explode(' ', $x_and_y)[0];
+$height = explode(' ', $x_and_y)[1];
+
+$captcha_arr = array();
+for ($i = 0; $i < $height; $i++){
+	$captcha_arr[$i] = explode(' ', readline());
+}
+
+for($y = $height - 1; $y >= 0; $y--){     // Удаление пустых строк 
+    $flag = 0;
+    for($x = 0; $x < $width; $x++){
+        if ($captcha_arr[$y][$x]==1){
+            $flag = 1;
+            break;
+        }
+    }
+    if ($flag == 0){
+        unset($captcha_arr[$y]);
+    }
+}
+$captcha_arr = array_values($captcha_arr);
+$height = count($captcha_arr);
+
+for($x = $width - 1; $x >= 0; $x--){     // Удаление пустых столбцов
+    $flag = 0;
+    for($y = 0; $y < $height; $y++){
+        if ($captcha_arr[$y][$x]==1){
+            $flag = 1;
+            break;
+        }
+    }
+    if ($flag == 0){
+        foreach($captcha_arr as &$line){
+            unset($line[$x]);
+        }
+        unset($line);
+    }
+}
+$captcha_arr = array_map('array_values', $captcha_arr);
+$width = count($captcha_arr[0]);
+
+if ($captcha_arr[0][0] == 0 && $captcha_arr[0][$width-1] == 0 && $captcha_arr[$height-1][0] == 0 && $captcha_arr[$height-1][$width-1] == 0){
+    echo "circle";
+}
+elseif ($captcha_arr[0][0] == 1 && $captcha_arr[0][$width-1] == 1 && $captcha_arr[$height-1][0] == 1 && $captcha_arr[$height-1][$width-1] == 1){
+    echo "square";
+}
+else{
+    echo "triangle";
+}
